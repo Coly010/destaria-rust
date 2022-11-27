@@ -49,7 +49,7 @@ impl<'a> Battle<'a> {
     pub fn is_active(&self) -> bool {
         match self.get_state() {
             BattleState::Active => true,
-            _ => false
+            _ => false,
         }
     }
 
@@ -91,7 +91,13 @@ impl<'a> Battle<'a> {
                             .calculate_damage()
                             .checked_sub(player.get_battle_gear().calculate_protection())
                         {
-                            Some(v) => if v == 0 {1} else {v},
+                            Some(v) => {
+                                if v == 0 {
+                                    1
+                                } else {
+                                    v
+                                }
+                            }
                             None => 1,
                         };
 

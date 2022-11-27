@@ -1,18 +1,18 @@
-use destaria::game::item::{Item, Armour, ArmourType, Weapon};
-use destaria::game::player::{NPC, Player};
 use destaria::game::battle::{Battle, BattleState, BattleTurn};
+use destaria::game::item::{Armour, ArmourType, Item, Weapon};
+use destaria::game::player::{Player, NPC};
+use destaria::game::system::cli::get_cli_input_with_prompt;
 
 fn main() {
-
     let sword = Item::Weapon(Weapon {
         name: String::from("Sword"),
-        damage: 2
+        damage: 2,
     });
 
     let helmut = Item::Armour(Armour {
         name: String::from("Helmut"),
         protection: 2,
-        armour_type: ArmourType::Head
+        armour_type: ArmourType::Head,
     });
 
     let mut player = Player::new();
@@ -20,15 +20,147 @@ fn main() {
     player.add_item_to_inventory(&sword);
     player.add_item_to_inventory(&helmut);
 
-
-    let inv = player.get_inventory();
-    for item in inv {
-        println!("You have a {} in your inventory", item.name());
-    }
-
     player.equip_item(&helmut);
     player.equip_item(&sword);
 
+    let mut npc = NPC::new(String::from("Troll"));
+    npc.equip_item(&sword);
+
+    println!("Welcome to Destaria!");
+    println!("A CLI Turn-Based Battle Game!");
+
+    'game_loop: loop {
+        print_game_options();
+
+        let command = get_cli_input_with_prompt("> ");
+        if command.eq("1") {
+            battle(&mut player, &mut npc)
+        } else if command.eq("2") {
+            print_equipment(&player);
+        } else if command.eq("3") {
+            print_inventory(&player);
+        } else if command.to_lowercase().eq("q") || command.to_lowercase().eq("quit") {
+            println!("Quitting game...");
+            break 'game_loop;
+        }
+    }
+}
+
+fn battle(player: &Player, npc: &NPC) {
+    println!("Starting battle with {}", npc.name);
+
+    let mut battle = Battle::new();
+    battle.start_battle(&player, &npc);
+
+    'attack_loop: loop {
+        print_battle_options(&npc, &battle);
+
+        let command = get_cli_input_with_prompt("> ");
+        if command.eq("1") {
+            for _n in 1..=2 {
+                if do_battle_turn(&player, &npc, &mut battle) {
+                    break 'attack_loop;
+                }
+            }
+        } else if command.eq("2") {
+            while battle.is_active() {
+                if do_battle_turn(&player, &npc, &mut battle) {
+                    break 'attack_loop;
+                }
+            }
+        } else if command.eq("3") {
+            println!("You fled from the battle!");
+            break 'attack_loop;
+        }
+    }
+}
+
+fn do_battle_turn(player: &Player, npc: &NPC, mut battle: &mut Battle) -> bool {
+    perform_attack(&player, &npc, &mut battle);
+
+    is_battle_finished(&mut battle)
+}
+
+fn perform_attack(player: &Player, npc: &NPC, battle: &mut Battle) {
+    let attack_result = battle.attack();
+    match battle.get_turn() {
+        BattleTurn::Player => {
+            if let Some(weapon) = player.get_battle_gear().weapon {
+                println!(
+                    "You attacked the {} with your {}, dealing {} damage!",
+                    npc.name,
+                    weapon.name(),
+                    attack_result.damage_dealt
+                );
+            }
+        }
+        BattleTurn::NPC => {
+            if let Some(weapon) = npc.get_battle_gear().weapon {
+                println!(
+                    "The {} attacked you with their {}, dealing {} damage!",
+                    npc.name,
+                    weapon.name(),
+                    attack_result.damage_dealt
+                );
+            }
+        }
+    }
+}
+
+fn is_battle_finished(battle: &mut Battle) -> bool {
+    match battle.check_battle_status() {
+        BattleState::Won => {
+            println!("\n\nYou won!");
+            true
+        }
+        BattleState::Lost => {
+            println!("\n\nYou lost!");
+            true
+        }
+        _ => {
+            battle.change_turn();
+            false
+        }
+    }
+}
+
+fn print_game_options() {
+    println!("\n");
+    println!("==============================");
+    println!("Your options are:");
+    println!("[1]: Battle");
+    println!("[2]: Check Equipment");
+    println!("[3]: Check Inventory");
+    println!("[Q]: Quit");
+}
+
+fn print_battle_options(npc: &NPC, battle: &Battle) {
+    println!("\n\nBattle Stats");
+    println!("==============================");
+    println!(
+        "You: {}hp \t {}: {}hp",
+        battle.player_hp, npc.name, battle.npc_hp
+    );
+    println!("\n");
+    println!("Battle Options:");
+    println!("[1]: Attack");
+    println!("[2]: Auto Attack (Note: You will not be able to flee!)");
+    println!("[3]: Flee");
+}
+
+fn print_inventory(player: &Player) {
+    let inv = player.get_inventory();
+    let items = inv.iter();
+
+    if items.len() == 0 {
+        println!("You have no items in your inventory!");
+    } else {
+        items.for_each(|item| println!("You have a {} in your inventory", item.name()));
+    }
+
+}
+
+fn print_equipment(player: &Player) {
     let battle_gear = player.get_battle_gear();
     println!("You currently have equipped:");
 
@@ -50,43 +182,9 @@ fn main() {
     if let Some(item) = battle_gear.weapon {
         println!("Weapon: {}", item.name());
     }
-    println!("Your total protection is {}, and your damage is {}", battle_gear.calculate_protection(), battle_gear.calculate_damage());
-
-
-    let mut npc = NPC::new(String::from("Troll"));
-    npc.equip_item(&sword);
-
-    println!("A wild {} has appeared! It has {} damage!", npc.name, npc.get_battle_gear().calculate_damage());
-
-    let mut battle = Battle::new();
-    battle.start_battle(&player, &npc);
-
-    println!("You started battling the {}! You have {}hp and the {} has {}hp!", npc.name, battle.player_hp, npc.name, battle.npc_hp);
-
-    while battle.is_active() {
-        let attack_result = battle.attack();
-        match battle.get_turn() {
-            BattleTurn::Player => {
-                if let Some(weapon) = player.get_battle_gear().weapon {
-                    println!("You attacked the {} with your {}, dealing {} damage! They have {}hp left", npc.name, weapon.name(), attack_result.damage_dealt, attack_result.hp_remaining);
-                }
-            },
-            BattleTurn::NPC => {
-                if let Some(weapon) = npc.get_battle_gear().weapon {
-                    println!("The {} attacked you with their {}, dealing {} damage! You have {}hp left", npc.name, weapon.name(), attack_result.damage_dealt, attack_result.hp_remaining);
-                }
-            }
-        }
-
-        match battle.check_battle_status() {
-            BattleState::Won => {
-                println!("You won!");
-            },
-            BattleState::Lost => {
-                println!("You lost!");
-            },
-            _ => battle.change_turn()
-        }
-    }
-
+    println!(
+        "Your total protection is {}, and your damage is {}",
+        battle_gear.calculate_protection(),
+        battle_gear.calculate_damage()
+    );
 }

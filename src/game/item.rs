@@ -8,7 +8,7 @@ pub enum ArmourType {
     Body,
     Legs,
     Hands,
-    Feet
+    Feet,
 }
 
 pub struct Armour {
@@ -26,14 +26,14 @@ impl Item {
     pub fn name(&self) -> &String {
         match self {
             Item::Weapon(weapon) => &weapon.name,
-            Item::Armour(armour) => &armour.name
+            Item::Armour(armour) => &armour.name,
         }
     }
 
     pub fn get_item_protection_or_damage(&self) -> u32 {
         match self {
             Item::Weapon(weapon) => weapon.damage,
-            Item::Armour(armour) => armour.protection
+            Item::Armour(armour) => armour.protection,
         }
     }
 }

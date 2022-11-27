@@ -1,4 +1,4 @@
-use super::item::{Item, ArmourType};
+use super::item::{ArmourType, Item};
 
 pub struct BattleGear<'a> {
     pub head: Option<&'a Item>,
@@ -6,7 +6,7 @@ pub struct BattleGear<'a> {
     pub legs: Option<&'a Item>,
     pub hands: Option<&'a Item>,
     pub feet: Option<&'a Item>,
-    pub weapon: Option<&'a Item>
+    pub weapon: Option<&'a Item>,
 }
 
 impl<'a> BattleGear<'a> {
@@ -57,31 +57,27 @@ impl<'a> BattleGear<'a> {
 
     pub fn equip_item<'b>(&'b mut self, item: &'a Item) {
         match item {
-            Item::Armour(armour) => {
-                match armour.armour_type {
-                    ArmourType::Head => self.head = Some(item),
-                    ArmourType::Body => self.body = Some(item),
-                    ArmourType::Legs => self.legs = Some(item),
-                    ArmourType::Hands => self.hands = Some(item),
-                    ArmourType::Feet => self.feet = Some(item),
-                }
-            }
-            Item::Weapon(_) => self.weapon = Some(item)
+            Item::Armour(armour) => match armour.armour_type {
+                ArmourType::Head => self.head = Some(item),
+                ArmourType::Body => self.body = Some(item),
+                ArmourType::Legs => self.legs = Some(item),
+                ArmourType::Hands => self.hands = Some(item),
+                ArmourType::Feet => self.feet = Some(item),
+            },
+            Item::Weapon(_) => self.weapon = Some(item),
         }
     }
 
     pub fn unequip_item<'b>(&'b mut self, item: &'a Item) {
         match item {
-            Item::Armour(armour) => {
-                match armour.armour_type {
-                    ArmourType::Head => self.head = None,
-                    ArmourType::Body => self.body = None,
-                    ArmourType::Legs => self.legs = None,
-                    ArmourType::Hands => self.hands = None,
-                    ArmourType::Feet => self.feet = None,
-                }
-            }
-            Item::Weapon(_) => self.weapon = None
+            Item::Armour(armour) => match armour.armour_type {
+                ArmourType::Head => self.head = None,
+                ArmourType::Body => self.body = None,
+                ArmourType::Legs => self.legs = None,
+                ArmourType::Hands => self.hands = None,
+                ArmourType::Feet => self.feet = None,
+            },
+            Item::Weapon(_) => self.weapon = None,
         }
     }
 }
@@ -89,7 +85,7 @@ impl<'a> BattleGear<'a> {
 pub struct NPC<'a> {
     pub name: String,
     pub level: u32,
-    battle_gear: BattleGear<'a>
+    battle_gear: BattleGear<'a>,
 }
 
 impl<'a> NPC<'a> {
@@ -97,7 +93,7 @@ impl<'a> NPC<'a> {
         NPC {
             name,
             level: 1,
-            battle_gear: BattleGear::new()
+            battle_gear: BattleGear::new(),
         }
     }
 
@@ -112,7 +108,7 @@ impl<'a> NPC<'a> {
     pub fn unequip_item<'b>(&'b mut self, item: &'a Item) {
         self.battle_gear.unequip_item(item);
     }
- }
+}
 
 pub struct Player<'a> {
     pub name: String,
@@ -150,19 +146,19 @@ impl<'a> Player<'a> {
     pub fn remove_item_from_inventory<'b>(&'b mut self, item: &'a Item) {
         let item_name_to_remove = match item {
             Item::Weapon(weapon) => &weapon.name,
-            Item::Armour(armour) => &armour.name
+            Item::Armour(armour) => &armour.name,
         };
 
-        let index = self.inventory.iter().position(| r | match r {
+        let index = self.inventory.iter().position(|r| match r {
             Item::Weapon(weapon) => weapon.name.eq(item_name_to_remove),
-            Item::Armour(armour) => armour.name.eq(item_name_to_remove)
+            Item::Armour(armour) => armour.name.eq(item_name_to_remove),
         });
 
         match index {
             Some(i) => {
                 self.inventory.remove(i);
             }
-            None => ()
+            None => (),
         }
     }
 
@@ -185,7 +181,7 @@ impl<'a> Player<'a> {
     }
 
     pub fn level_up(&mut self) -> u32 {
-        let mut levels_gained:u32 = 0;
+        let mut levels_gained: u32 = 0;
 
         while self.exp >= self.exp_to_next_level() {
             self.exp -= self.exp_to_next_level();
@@ -195,5 +191,4 @@ impl<'a> Player<'a> {
 
         levels_gained
     }
-
 }
