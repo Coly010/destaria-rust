@@ -3,6 +3,8 @@ use destaria::game::item::{Armour, ArmourType, Item, Weapon};
 use destaria::game::player::{Player, NPC};
 use destaria::game::system::cli::get_cli_input_with_prompt;
 
+use colored::Colorize;
+
 fn main() {
     let sword = Item::Weapon(Weapon {
         name: String::from("Sword"),
@@ -26,8 +28,7 @@ fn main() {
     let mut npc = NPC::new(String::from("Troll"));
     npc.equip_item(&sword);
 
-    println!("Welcome to Destaria!");
-    println!("A CLI Turn-Based Battle Game!");
+    print_game_logo();
 
     'game_loop: loop {
         print_game_options();
@@ -47,6 +48,7 @@ fn main() {
 }
 
 fn battle(player: &Player, npc: &NPC) {
+    print_game_logo();
     println!("Starting battle with {}", npc.name);
 
     let mut battle = Battle::new();
@@ -56,6 +58,8 @@ fn battle(player: &Player, npc: &NPC) {
         print_battle_options(&npc, &battle);
 
         let command = get_cli_input_with_prompt("> ");
+
+        print_game_logo();
         if command.eq("1") {
             for _n in 1..=2 {
                 if do_battle_turn(&player, &npc, &mut battle) {
@@ -87,20 +91,28 @@ fn perform_attack(player: &Player, npc: &NPC, battle: &mut Battle) {
         BattleTurn::Player => {
             if let Some(weapon) = player.get_battle_gear().weapon {
                 println!(
-                    "You attacked the {} with your {}, dealing {} damage!",
-                    npc.name,
-                    weapon.name(),
-                    attack_result.damage_dealt
-                );
+                    "{}",
+                    String::from(format!(
+                        "You attacked the {} with your {}, dealing {} damage!",
+                        npc.name,
+                        weapon.name(),
+                        attack_result.damage_dealt
+                    ))
+                    .blue()
+                )
             }
         }
         BattleTurn::NPC => {
             if let Some(weapon) = npc.get_battle_gear().weapon {
                 println!(
-                    "The {} attacked you with their {}, dealing {} damage!",
-                    npc.name,
-                    weapon.name(),
-                    attack_result.damage_dealt
+                    "{}",
+                    String::from(format!(
+                        "The {} attacked you with their {}, dealing {} damage!",
+                        npc.name,
+                        weapon.name(),
+                        attack_result.damage_dealt
+                    ))
+                    .purple()
                 );
             }
         }
@@ -110,11 +122,11 @@ fn perform_attack(player: &Player, npc: &NPC, battle: &mut Battle) {
 fn is_battle_finished(battle: &mut Battle) -> bool {
     match battle.check_battle_status() {
         BattleState::Won => {
-            println!("\n\nYou won!");
+            println!("\n\n{}", String::from("You won!").green().bold());
             true
         }
         BattleState::Lost => {
-            println!("\n\nYou lost!");
+            println!("\n\n{}", String::from("You lost!").red().bold());
             true
         }
         _ => {
@@ -127,7 +139,7 @@ fn is_battle_finished(battle: &mut Battle) -> bool {
 fn print_game_options() {
     println!("\n");
     println!("==============================");
-    println!("Your options are:");
+    println!("Game Options:");
     println!("[1]: Battle");
     println!("[2]: Check Equipment");
     println!("[3]: Check Inventory");
@@ -135,7 +147,9 @@ fn print_game_options() {
 }
 
 fn print_battle_options(npc: &NPC, battle: &Battle) {
-    println!("\n\nBattle Stats");
+    println!("\n\n");
+    println!("==============================");
+    println!("Battle Stats");
     println!("==============================");
     println!(
         "You: {}hp \t {}: {}hp",
@@ -149,6 +163,8 @@ fn print_battle_options(npc: &NPC, battle: &Battle) {
 }
 
 fn print_inventory(player: &Player) {
+    print_game_logo();
+
     let inv = player.get_inventory();
     let items = inv.iter();
 
@@ -157,10 +173,11 @@ fn print_inventory(player: &Player) {
     } else {
         items.for_each(|item| println!("You have a {} in your inventory", item.name()));
     }
-
 }
 
 fn print_equipment(player: &Player) {
+    print_game_logo();
+
     let battle_gear = player.get_battle_gear();
     println!("You currently have equipped:");
 
@@ -187,4 +204,22 @@ fn print_equipment(player: &Player) {
         battle_gear.calculate_protection(),
         battle_gear.calculate_damage()
     );
+}
+
+fn print_game_logo() {
+    print!("{}[2J", 27 as char);
+    println!("████████▄     ▄████████    ▄████████     ███        ▄████████    ▄████████  ▄█     ▄████████");
+    println!("███   ▀███   ███    ███   ███    ███ ▀█████████▄   ███    ███   ███    ███ ███    ███    ███");
+    println!("███    ███   ███    █▀    ███    █▀     ▀███▀▀██   ███    ███   ███    ███ ███▌   ███    ███");
+    println!("███    ███  ▄███▄▄▄       ███            ███   ▀   ███    ███  ▄███▄▄▄▄██▀ ███▌   ███    ███");
+    println!("███    ███ ▀▀███▀▀▀     ▀███████████     ███     ▀███████████ ▀▀███▀▀▀▀▀   ███▌ ▀███████████");
+    println!("███    ███   ███    █▄           ███     ███       ███    ███ ▀███████████ ███    ███    ███");
+    println!("███   ▄███   ███    ███    ▄█    ███     ███       ███    ███   ███    ███ ███    ███    ███");
+    println!("████████▀    ██████████  ▄████████▀     ▄████▀     ███    █▀    ███    ███ █▀     ███    █▀");
+    println!("                                                                ███    ███");
+
+    println!("{}", String::from("A CLI Turn-Based Battle Game!").green());
+    println!("\n");
+    println!("==============================");
+    println!("\n");
 }
