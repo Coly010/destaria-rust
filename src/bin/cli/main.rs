@@ -2,8 +2,8 @@ use destaria::game::item::{Armour, ArmourType, Item, Weapon};
 use destaria::game::player::{Player, NPC};
 use destaria::game::system::cli::get_cli_input_with_prompt;
 
-mod output;
 mod battle;
+mod output;
 
 fn main() {
     let sword = Item::Weapon(Weapon {

@@ -2,8 +2,8 @@ use destaria::game::battle::{Battle, BattleState, BattleTurn};
 use destaria::game::player::{Player, NPC};
 use destaria::game::system::cli::get_cli_input_with_prompt;
 
-use colored::Colorize;
 use super::output;
+use colored::Colorize;
 
 pub fn battle(player: &Player, npc: &NPC) {
     output::print_game_logo();
@@ -40,7 +40,7 @@ pub fn battle(player: &Player, npc: &NPC) {
 fn do_battle_turn(player: &Player, npc: &NPC, mut battle: &mut Battle) -> bool {
     perform_attack(&player, &npc, &mut battle);
 
-    is_battle_finished(&mut battle)
+    is_battle_finished(&mut battle, &player, &npc)
 }
 
 fn perform_attack(player: &Player, npc: &NPC, battle: &mut Battle) {
@@ -56,7 +56,7 @@ fn perform_attack(player: &Player, npc: &NPC, battle: &mut Battle) {
                         weapon.name(),
                         attack_result.damage_dealt
                     ))
-                        .blue()
+                    .blue()
                 )
             }
         }
@@ -70,17 +70,25 @@ fn perform_attack(player: &Player, npc: &NPC, battle: &mut Battle) {
                         weapon.name(),
                         attack_result.damage_dealt
                     ))
-                        .purple()
+                    .purple()
                 );
             }
         }
     }
 }
 
-fn is_battle_finished(battle: &mut Battle) -> bool {
+fn is_battle_finished(battle: &mut Battle, player: &Player, npc: &NPC) -> bool {
     match battle.check_battle_status() {
         BattleState::Won => {
             println!("\n\n{}", String::from("You won!").green().bold());
+            println!(
+                "{}",
+                String::from(format!(
+                    "You gained {} exp!",
+                    calculate_exp_reward(&player, &npc)
+                ))
+                .yellow()
+            );
             true
         }
         BattleState::Lost => {
@@ -92,4 +100,22 @@ fn is_battle_finished(battle: &mut Battle) -> bool {
             false
         }
     }
+}
+
+fn calculate_exp_reward(player: &Player, npc: &NPC) -> u32 {
+    let mut reward: u32 = 1;
+    if player.strength < npc.strength {
+        reward += 2;
+    } else {
+        reward += 1;
+    }
+
+    if player.level < npc.level {
+        let difference_in_level = npc.level - player.level;
+        reward = (reward * (difference_in_level + 1)) / 2;
+    } else {
+        reward += 1;
+    }
+
+    reward
 }
