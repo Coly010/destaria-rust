@@ -85,6 +85,7 @@ impl<'a> BattleGear<'a> {
 pub struct NPC<'a> {
     pub name: String,
     pub level: u32,
+    pub strength: u32,
     battle_gear: BattleGear<'a>,
 }
 
@@ -93,6 +94,7 @@ impl<'a> NPC<'a> {
         NPC {
             name,
             level: 1,
+            strength: 1,
             battle_gear: BattleGear::new(),
         }
     }
@@ -117,6 +119,7 @@ pub struct Player<'a> {
     pub money: u32,
     pub battles_won: u32,
     pub battles_lost: u32,
+    pub strength: u32,
     inventory: Vec<&'a Item>,
     battle_gear: BattleGear<'a>,
 }
@@ -130,6 +133,7 @@ impl<'a> Player<'a> {
             money: 0,
             battles_won: 0,
             battles_lost: 0,
+            strength: 1,
             inventory: Vec::new(),
             battle_gear: BattleGear::new(),
         }
@@ -186,6 +190,7 @@ impl<'a> Player<'a> {
         while self.exp >= self.exp_to_next_level() {
             self.exp -= self.exp_to_next_level();
             self.level += 1;
+            self.strength += 1;
             levels_gained += 1;
         }
 

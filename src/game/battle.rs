@@ -69,9 +69,8 @@ impl<'a> Battle<'a> {
             if let Some(npc) = self.npc {
                 match self.turn {
                     BattleTurn::Player => {
-                        damage_dealt = match player
-                            .get_battle_gear()
-                            .calculate_damage()
+                        damage_dealt = match (player.get_battle_gear().calculate_damage()
+                            + player.strength)
                             .checked_sub(npc.get_battle_gear().calculate_protection())
                         {
                             Some(v) => v,
@@ -86,9 +85,8 @@ impl<'a> Battle<'a> {
                         hp_remaining = self.npc_hp;
                     }
                     BattleTurn::NPC => {
-                        damage_dealt = match npc
-                            .get_battle_gear()
-                            .calculate_damage()
+                        damage_dealt = match (npc.get_battle_gear().calculate_damage()
+                            + npc.strength)
                             .checked_sub(player.get_battle_gear().calculate_protection())
                         {
                             Some(v) => {
