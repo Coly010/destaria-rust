@@ -3,6 +3,7 @@ use destaria::game::player::{Player, NPC};
 use destaria::game::system::cli::get_cli_input_with_prompt;
 
 mod battle;
+mod inventory;
 mod output;
 
 fn main() {
@@ -17,10 +18,17 @@ fn main() {
         armour_type: ArmourType::Head,
     });
 
+    let chestplate = Item::Armour(Armour {
+        name: String::from("Chestplate"),
+        protection: 4,
+        armour_type: ArmourType::Body,
+    });
+
     let mut player = Player::new();
 
     player.add_item_to_inventory(&sword);
     player.add_item_to_inventory(&helmut);
+    player.add_item_to_inventory(&chestplate);
 
     player.equip_item(&helmut);
     player.equip_item(&sword);
@@ -39,7 +47,7 @@ fn main() {
         } else if command.eq("2") {
             output::print_equipment(&player);
         } else if command.eq("3") {
-            output::print_inventory(&player);
+            inventory::load_inventory(&mut player);
         } else if command.to_lowercase().eq("q") || command.to_lowercase().eq("quit") {
             println!("Quitting game...");
             break 'game_loop;

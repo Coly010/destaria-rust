@@ -120,7 +120,7 @@ pub struct Player<'a> {
     pub battles_won: u32,
     pub battles_lost: u32,
     pub strength: u32,
-    inventory: Vec<&'a Item>,
+    pub inventory: Vec<&'a Item>,
     battle_gear: BattleGear<'a>,
 }
 
@@ -137,10 +137,6 @@ impl<'a> Player<'a> {
             inventory: Vec::new(),
             battle_gear: BattleGear::new(),
         }
-    }
-
-    pub fn get_inventory(&self) -> &Vec<&Item> {
-        &self.inventory
     }
 
     pub fn add_item_to_inventory<'b>(&'b mut self, item: &'a Item) {

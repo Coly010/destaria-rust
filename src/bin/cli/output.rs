@@ -59,19 +59,6 @@ pub fn print_battle_options(player: &Player, npc: &NPC, battle: &Battle) {
     println!("[3]: Flee");
 }
 
-pub fn print_inventory(player: &Player) {
-    print_game_logo();
-
-    let inv = player.get_inventory();
-    let items = inv.iter();
-
-    if items.len() == 0 {
-        println!("You have no items in your inventory!");
-    } else {
-        items.for_each(|item| println!("You have a {} in your inventory", item.name()));
-    }
-}
-
 pub fn print_equipment(player: &Player) {
     print_game_logo();
 
