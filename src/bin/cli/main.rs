@@ -31,7 +31,7 @@ fn main() {
     output::print_game_logo();
 
     'game_loop: loop {
-        output::print_game_options();
+        output::print_game_options(&player);
 
         let command = get_cli_input_with_prompt("> ");
         if command.eq("1") {

@@ -180,8 +180,13 @@ impl<'a> Player<'a> {
         self.battle_gear.unequip_item(item);
     }
 
+    pub fn give_exp(&mut self, exp: u32) -> u32 {
+        self.exp += exp;
+        self.level_up()
+    }
+
     pub fn exp_to_next_level(&self) -> u32 {
-        self.level.pow(2)
+        (self.level + 1).pow(2)
     }
 
     pub fn level_up(&mut self) -> u32 {

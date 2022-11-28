@@ -12,6 +12,11 @@ pub enum BattleTurn {
     NPC,
 }
 
+pub struct BattleResult {
+    pub won_or_lost: bool,
+    pub exp_reward: Option<u32>,
+}
+
 pub struct AttackResult {
     pub damage_dealt: u32,
     pub hp_remaining: u32,
