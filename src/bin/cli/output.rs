@@ -59,37 +59,6 @@ pub fn print_battle_options(player: &Player, npc: &NPC, battle: &Battle) {
     println!("[3]: Flee");
 }
 
-pub fn print_equipment(player: &Player) {
-    print_game_logo();
-
-    let battle_gear = player.get_battle_gear();
-    println!("You currently have equipped:");
-
-    if let Some(item) = battle_gear.head {
-        println!("Head: {}", item.name());
-    }
-    if let Some(item) = battle_gear.body {
-        println!("Body: {}", item.name());
-    }
-    if let Some(item) = battle_gear.legs {
-        println!("Legs: {}", item.name());
-    }
-    if let Some(item) = battle_gear.hands {
-        println!("Hands: {}", item.name());
-    }
-    if let Some(item) = battle_gear.feet {
-        println!("Feet: {}", item.name());
-    }
-    if let Some(item) = battle_gear.weapon {
-        println!("Weapon: {}", item.name());
-    }
-    println!(
-        "Your total protection is {}, and your damage is {}",
-        battle_gear.calculate_protection(),
-        battle_gear.calculate_damage()
-    );
-}
-
 pub fn print_game_logo() {
     print!("{}[2J", 27 as char);
     println!("████████▄     ▄████████    ▄████████     ███        ▄████████    ▄████████  ▄█     ▄████████");
