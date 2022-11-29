@@ -52,7 +52,7 @@ fn main() {
         if command.eq("1") {
             battle::battle(&mut player, &mut npc)
         } else if command.eq("2") {
-            equipment::print_equipment(&player);
+            equipment::load_equipment(&mut player);
         } else if command.eq("3") {
             inventory::load_inventory(&mut player);
         } else if command.to_lowercase().eq("q") || command.to_lowercase().eq("quit") {

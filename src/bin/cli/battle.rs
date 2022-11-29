@@ -5,6 +5,10 @@ use destaria::game::system::cli::get_cli_input_with_prompt;
 use super::output;
 use colored::Colorize;
 
+const BATTLE_OPTIONS_ATTACK: &str = "1";
+const BATTLE_OPTIONS_AUTO_ATTACK: &str = "2";
+const BATTLE_OPTIONS_FLEE: &str = "3";
+
 pub fn battle(player: &mut Player, npc: &NPC) {
     output::print_game_logo();
     println!("Starting battle with {}", npc.name);
@@ -18,7 +22,7 @@ pub fn battle(player: &mut Player, npc: &NPC) {
         let command = get_cli_input_with_prompt("> ");
 
         output::print_game_logo();
-        if command.eq("1") {
+        if command.eq(BATTLE_OPTIONS_ATTACK) {
             for _n in 1..=2 {
                 let battle_result = do_battle_turn(player, &npc, &mut battle);
 
@@ -28,7 +32,7 @@ pub fn battle(player: &mut Player, npc: &NPC) {
                     break 'attack_loop;
                 }
             }
-        } else if command.eq("2") {
+        } else if command.eq(BATTLE_OPTIONS_AUTO_ATTACK) {
             while battle.is_active() {
                 let battle_result = do_battle_turn(player, &npc, &mut battle);
 
@@ -38,7 +42,7 @@ pub fn battle(player: &mut Player, npc: &NPC) {
                     break 'attack_loop;
                 }
             }
-        } else if command.eq("3") {
+        } else if command.eq(BATTLE_OPTIONS_FLEE) {
             println!("You fled from the battle!");
             break 'attack_loop;
         }

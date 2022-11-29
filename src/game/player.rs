@@ -80,6 +80,55 @@ impl<'a> BattleGear<'a> {
             Item::Weapon(_) => self.weapon = None,
         }
     }
+
+    pub fn has_items_equipped(&self) -> bool {
+        let mut has_equipped_items = false;
+        if let Some(_) = self.head {
+            has_equipped_items = true;
+        }
+        if let Some(_) = self.body {
+            has_equipped_items = true;
+        }
+        if let Some(_) = self.legs {
+            has_equipped_items = true;
+        }
+        if let Some(_) = self.hands {
+            has_equipped_items = true;
+        }
+        if let Some(_) = self.feet {
+            has_equipped_items = true;
+        }
+        if let Some(_) = self.weapon {
+            has_equipped_items = true;
+        }
+
+        has_equipped_items
+    }
+
+    pub fn get_all_items_equipped_as_vec<'b>(&'b self) -> Vec<&'a Item> {
+        let mut items: Vec<&Item> = vec!();
+
+        if let Some(item) = self.head {
+            items.push(item);
+        }
+        if let Some(item) = self.body {
+            items.push(item);
+        }
+        if let Some(item) = self.legs {
+            items.push(item);
+        }
+        if let Some(item) = self.hands {
+            items.push(item);
+        }
+        if let Some(item) = self.feet {
+            items.push(item);
+        }
+        if let Some(item) = self.weapon {
+            items.push(item);
+        }
+
+        items
+    }
 }
 
 pub struct NPC<'a> {
@@ -121,7 +170,7 @@ pub struct Player<'a> {
     pub battles_lost: u32,
     pub strength: u32,
     pub inventory: Vec<&'a Item>,
-    battle_gear: BattleGear<'a>,
+    pub battle_gear: BattleGear<'a>,
 }
 
 impl<'a> Player<'a> {

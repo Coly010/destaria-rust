@@ -7,13 +7,16 @@ use inquire::{InquireError, Select};
 
 use super::output;
 
+const INVENTORY_OPTIONS_EQUIP_ITEM: &str = "1";
+const INVENTORY_OPTIONS_QUIT: &str = "2";
+
 pub fn load_inventory(player: &mut Player) {
     print_inventory(&player);
 
     'inventory_loop: loop {
         print_inventory_options(&player);
         let command = get_cli_input_with_prompt("> ");
-        if command.eq("1") {
+        if command.eq(INVENTORY_OPTIONS_EQUIP_ITEM) {
             let player_inventory = &player.inventory;
             let items = player_inventory.to_vec();
             let item_to_equip: Result<&Item, InquireError> =
@@ -27,7 +30,7 @@ pub fn load_inventory(player: &mut Player) {
                 }
                 Err(_) => (),
             }
-        } else if command.eq("2") {
+        } else if command.eq(INVENTORY_OPTIONS_QUIT) {
             output::print_game_logo();
             break 'inventory_loop;
         }
@@ -51,7 +54,9 @@ fn print_inventory(player: &Player) {
                     "{} ({}, {})\n",
                     item.name(),
                     item.get_name_of_item_type().italic().blue(),
-                    format!("{} protection", item.get_item_protection_or_damage()).italic().blue()
+                    format!("{} protection", item.get_item_protection_or_damage())
+                        .italic()
+                        .blue()
                 )
                 .as_str(),
             ),
@@ -60,7 +65,9 @@ fn print_inventory(player: &Player) {
                     "{} ({}, {})\n",
                     item.name(),
                     item.get_name_of_item_type().italic().bright_red(),
-                    format!("{} dmg", item.get_item_protection_or_damage()).italic().bright_red()
+                    format!("{} dmg", item.get_item_protection_or_damage())
+                        .italic()
+                        .bright_red()
                 )
                 .as_str(),
             ),
@@ -79,7 +86,7 @@ fn print_inventory_options(player: &Player) {
     println!("Inventory Options:");
 
     if items.len() > 0 {
-        println!("[1]: Equip Item");
+        println!("[{}]: Equip Item", INVENTORY_OPTIONS_EQUIP_ITEM);
     }
-    println!("[2]: Leave");
+    println!("[{}]: Leave", INVENTORY_OPTIONS_QUIT);
 }
