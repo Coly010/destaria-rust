@@ -55,17 +55,45 @@ impl<'a> BattleGear<'a> {
         damage
     }
 
-    pub fn equip_item<'b>(&'b mut self, item: &'a Item) {
+    pub fn equip_item<'b>(&'b mut self, item: &'a Item) -> Option<&'a Item> {
+        let mut item_to_return_to_inventory: Option<&'a Item> = None;
         match item {
             Item::Armour(armour) => match armour.armour_type {
-                ArmourType::Head => self.head = Some(item),
-                ArmourType::Body => self.body = Some(item),
-                ArmourType::Legs => self.legs = Some(item),
-                ArmourType::Hands => self.hands = Some(item),
-                ArmourType::Feet => self.feet = Some(item),
+                ArmourType::Head => {
+                    if let Some(item) = self.head {
+                        item_to_return_to_inventory = Some(item);
+                    }
+                    self.head = Some(item)
+                },
+                ArmourType::Body => {
+                    if let Some(item) = self.body {
+                        item_to_return_to_inventory = Some(item);
+                    }
+                    self.body = Some(item)},
+                ArmourType::Legs => {
+                    if let Some(item) = self.legs {
+                        item_to_return_to_inventory = Some(item);
+                    }
+                    self.legs = Some(item)},
+                ArmourType::Hands => {
+                    if let Some(item) = self.hands {
+                        item_to_return_to_inventory = Some(item);
+                    }
+                    self.hands = Some(item)},
+                ArmourType::Feet => {
+                    if let Some(item) = self.feet {
+                        item_to_return_to_inventory = Some(item);
+                    }
+                    self.feet = Some(item)},
             },
-            Item::Weapon(_) => self.weapon = Some(item),
+            Item::Weapon(_) => {
+                if let Some(item) = self.weapon {
+                    item_to_return_to_inventory = Some(item);
+                }
+                self.weapon = Some(item)},
         }
+
+        item_to_return_to_inventory
     }
 
     pub fn unequip_item<'b>(&'b mut self, item: &'a Item) {
@@ -217,7 +245,10 @@ impl<'a> Player<'a> {
 
     pub fn equip_item<'b>(&'b mut self, item: &'a Item) {
         self.remove_item_from_inventory(item);
-        self.battle_gear.equip_item(item);
+        let item_to_return_to_inventory = self.battle_gear.equip_item(item);
+        if let Some(item_to_return) = item_to_return_to_inventory {
+            self.add_item_to_inventory(item_to_return);
+        }
     }
 
     pub fn unequip_item<'b>(&'b mut self, item: &'a Item) {
