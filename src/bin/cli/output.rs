@@ -42,15 +42,21 @@ pub fn print_battle_options(player: &Player, npc: &NPC, battle: &Battle) {
     println!("==============================");
     println!("Battle Stats");
     println!("==============================");
+    println!("     You     |    {}",npc.name);
+    println!("-------------|-------------");
     println!(
-        "You: {}hp \t {}: {}hp",
-        battle.player_hp, npc.name, battle.npc_hp
+        "{}hp \t     |  {}hp",
+        battle.player_hp, battle.npc_hp
     );
     println!(
-        "You: 💪 {}  \t {}: 💪 {}",
-        player.strength, npc.name, npc.strength
+        "💪 {}  \t     |  💪 {}",
+        player.strength, npc.strength
     );
-    println!("You: {}/{} exp", player.exp, player.exp_to_next_level());
+    println!(
+        "Lvl {}  \t     |  Lvl {}",
+        player.level, npc.level
+    );
+    println!("{}/{} exp", player.exp, player.exp_to_next_level());
     print_player_exp_bar(&player);
     println!("\n");
     println!("Battle Options:");

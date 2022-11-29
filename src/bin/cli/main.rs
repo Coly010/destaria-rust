@@ -31,12 +31,6 @@ fn main() {
         initial_items_log.push_str(format!("You've been given {}!\n", armour).as_str());
     }
 
-    let mut npc: Option<&NPC> = None;
-    let npc_key: &str = NPC_KEYS[fastrand::usize(..NPC_KEYS.len())];
-    if let Some(selected_npc) = NPCS.get(npc_key) {
-        npc = Some(selected_npc);
-    }
-
     output::print_game_logo();
 
     println!("{}", initial_items_log);
@@ -46,7 +40,8 @@ fn main() {
 
         let command = get_cli_input_with_prompt("> ");
         if command.eq("1") {
-            if let Some(npc) = npc {
+            let npc_key: &str = NPC_KEYS[fastrand::usize(..NPC_KEYS.len())];
+            if let Some(npc) = NPCS.get(npc_key) {
                 battle::battle(&mut player, &npc)
             }
         } else if command.eq("2") {
