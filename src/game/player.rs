@@ -64,33 +64,38 @@ impl<'a> BattleGear<'a> {
                         item_to_return_to_inventory = Some(item);
                     }
                     self.head = Some(item)
-                },
+                }
                 ArmourType::Body => {
                     if let Some(item) = self.body {
                         item_to_return_to_inventory = Some(item);
                     }
-                    self.body = Some(item)},
+                    self.body = Some(item)
+                }
                 ArmourType::Legs => {
                     if let Some(item) = self.legs {
                         item_to_return_to_inventory = Some(item);
                     }
-                    self.legs = Some(item)},
+                    self.legs = Some(item)
+                }
                 ArmourType::Hands => {
                     if let Some(item) = self.hands {
                         item_to_return_to_inventory = Some(item);
                     }
-                    self.hands = Some(item)},
+                    self.hands = Some(item)
+                }
                 ArmourType::Feet => {
                     if let Some(item) = self.feet {
                         item_to_return_to_inventory = Some(item);
                     }
-                    self.feet = Some(item)},
+                    self.feet = Some(item)
+                }
             },
             Item::Weapon(_) => {
                 if let Some(item) = self.weapon {
                     item_to_return_to_inventory = Some(item);
                 }
-                self.weapon = Some(item)},
+                self.weapon = Some(item)
+            }
         }
 
         item_to_return_to_inventory
@@ -134,7 +139,7 @@ impl<'a> BattleGear<'a> {
     }
 
     pub fn get_all_items_equipped_as_vec<'b>(&'b self) -> Vec<&'a Item> {
-        let mut items: Vec<&Item> = vec!();
+        let mut items: Vec<&Item> = vec![];
 
         if let Some(item) = self.head {
             items.push(item);

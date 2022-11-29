@@ -1,5 +1,5 @@
-use destaria::game::player::Player;
 use destaria::game::item::Item;
+use destaria::game::player::Player;
 use destaria::game::system::cli::get_cli_input_with_prompt;
 
 use super::output;

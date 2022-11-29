@@ -12,3 +12,4 @@ src = "src/cli/main.rs"
 [dependencies]
 colored = "2"
 inquire = "0.5.2"
+fastrand = "1.8.0"
