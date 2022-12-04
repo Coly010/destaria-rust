@@ -27,7 +27,7 @@ pub fn print_game_options(player: &Player) {
     println!("\n");
     println!("{}", String::from("Your Stats:").bold().yellow());
     println!("Level {} \t💪 {}", player.level, player.strength);
-    println!("{}/{} exp", player.exp, player.exp_to_next_level());
+    println!("{}/{} exp \t💰 {}", player.exp, player.exp_to_next_level(), player.money);
     print_player_exp_bar(&player);
     println!("\n");
     println!("==============================");

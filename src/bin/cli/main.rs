@@ -52,7 +52,7 @@ fn main() {
                 battle::battle(&mut player, &npc)
             }
         } else if command.eq(NPC_ARENA_COMMAND) {
-            npc_arena::load_npc_arena(&mut player, &(Vec::from_iter(NPCS.values().clone())));
+            npc_arena::load_npc_arena(&mut player, &mut (Vec::from_iter(NPCS.values().clone())));
         } else if command.eq(EQUIPMENT_COMMAND) {
             equipment::load_equipment(&mut player);
         } else if command.eq(INVENTORY_COMMAND) {

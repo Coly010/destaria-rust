@@ -27,7 +27,9 @@ pub fn battle(player: &mut Player, npc: &NPC) {
                 let battle_result = do_battle_turn(player, &npc, &mut battle);
 
                 if battle_result.won_or_lost {
-                    process_exp_reward(battle_result, player);
+                    println!("\n");
+                    process_exp_reward(&battle_result, player);
+                    process_money_reward(&battle_result, player);
 
                     break 'attack_loop;
                 }
@@ -37,7 +39,9 @@ pub fn battle(player: &mut Player, npc: &NPC) {
                 let battle_result = do_battle_turn(player, &npc, &mut battle);
 
                 if battle_result.won_or_lost {
-                    process_exp_reward(battle_result, player);
+                    println!("\n");
+                    process_exp_reward(&battle_result, player);
+                    process_money_reward(&battle_result, player);
 
                     break 'attack_loop;
                 }
@@ -49,7 +53,7 @@ pub fn battle(player: &mut Player, npc: &NPC) {
     }
 }
 
-fn process_exp_reward(battle_result: BattleResult, player: &mut Player) {
+fn process_exp_reward(battle_result: &BattleResult, player: &mut Player) {
     if let Some(exp_reward) = battle_result.exp_reward {
         let levels_gained = player.give_exp(exp_reward);
         if levels_gained > 0 {
@@ -59,6 +63,13 @@ fn process_exp_reward(battle_result: BattleResult, player: &mut Player) {
                 player.level, player.strength
             );
         }
+    }
+}
+
+fn process_money_reward(battle_result: &BattleResult, player: &mut Player) {
+    if let Some(money_reward) = battle_result.money_reward {
+        player.give_money(money_reward);
+        println!("You now have {} 💰", player.money);
     }
 }
 
@@ -106,19 +117,29 @@ fn is_battle_finished(battle: &mut Battle, player: &Player, npc: &NPC) -> Battle
     match battle.check_battle_status() {
         BattleState::Won => {
             let exp_reward = calculate_exp_reward(&player, &npc);
+            let money_reward = calculate_money_reward(&player, &npc);
             println!("\n\n{}", String::from("You won!").green().bold());
             println!(
                 "{}",
                 String::from(format!(
                     "You gained {} exp!",
-                    calculate_exp_reward(&player, &npc)
+                    exp_reward
                 ))
                 .yellow()
+            );
+            println!(
+                "{}",
+                String::from(format!(
+                    "You found {} 💰!",
+                    money_reward
+                ))
+                    .yellow()
             );
 
             BattleResult {
                 won_or_lost: true,
                 exp_reward: Some(exp_reward),
+                money_reward: Some(money_reward),
             }
         }
         BattleState::Lost => {
@@ -126,6 +147,7 @@ fn is_battle_finished(battle: &mut Battle, player: &Player, npc: &NPC) -> Battle
             BattleResult {
                 won_or_lost: true,
                 exp_reward: None,
+                money_reward: None,
             }
         }
         _ => {
@@ -133,6 +155,7 @@ fn is_battle_finished(battle: &mut Battle, player: &Player, npc: &NPC) -> Battle
             BattleResult {
                 won_or_lost: false,
                 exp_reward: None,
+                money_reward: None,
             }
         }
     }
@@ -140,6 +163,24 @@ fn is_battle_finished(battle: &mut Battle, player: &Player, npc: &NPC) -> Battle
 
 fn calculate_exp_reward(player: &Player, npc: &NPC) -> u32 {
     let mut reward: u32 = 1;
+    if player.strength < npc.strength {
+        reward += 2;
+    } else {
+        reward += 1;
+    }
+
+    if player.level < npc.level {
+        let difference_in_level = npc.level - player.level;
+        reward = (reward * (difference_in_level + 1)) / 2;
+    } else {
+        reward += 1;
+    }
+
+    reward
+}
+
+fn calculate_money_reward(player: &Player, npc: &NPC) -> u32 {
+    let mut reward: u32 = 5;
     if player.strength < npc.strength {
         reward += 2;
     } else {

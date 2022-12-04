@@ -15,6 +15,7 @@ pub enum BattleTurn {
 pub struct BattleResult {
     pub won_or_lost: bool,
     pub exp_reward: Option<u32>,
+    pub money_reward: Option<u32>,
 }
 
 pub struct AttackResult {

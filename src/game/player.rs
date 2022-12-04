@@ -277,6 +277,23 @@ impl<'a> Player<'a> {
         self.level_up()
     }
 
+    pub fn give_money(&mut self, money: u32) {
+        self.money += money;
+    }
+
+    pub fn try_take_money(&mut self, money: u32) -> Result<u32, String> {
+        if self.money >= money {
+            self.take_money(money);
+            Ok(self.money)
+        } else {
+            Err(String::from("You do not have enough money for that!"))
+        }
+    }
+
+    pub fn take_money(&mut self, money: u32) {
+        self.money -= money;
+    }
+
     pub fn exp_to_next_level(&self) -> u32 {
         (self.level + 1).pow(2)
     }

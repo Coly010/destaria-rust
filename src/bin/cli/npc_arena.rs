@@ -7,9 +7,9 @@ use inquire::{InquireError, Select};
 const SELECT_NPC_COMMAND: &str = "1";
 const LEAVE_NPC_ARENA: &str = "2";
 
-pub fn load_npc_arena(mut player: &mut Player, npcs: &Vec<&NPC>) {
-    npcs.clone().sort_by(|a,b| a.level.cmp(&b.level));
-    print_npc_arena(npcs);
+pub fn load_npc_arena(mut player: &mut Player, mut npcs: &mut Vec<&NPC>) {
+    print_npc_arena();
+    npcs.sort_by(|a,b| a.level.cmp(&b.level));
 
     'npc_arena_loop: loop {
         print_npc_arena_options(npcs);
@@ -30,7 +30,7 @@ pub fn load_npc_arena(mut player: &mut Player, npcs: &Vec<&NPC>) {
     }
 }
 
-pub fn print_npc_arena(npcs: &Vec<&NPC>) {
+pub fn print_npc_arena() {
     output::print_game_logo();
 }
 
