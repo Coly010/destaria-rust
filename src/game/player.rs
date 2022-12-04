@@ -1,4 +1,5 @@
 use super::item::{ArmourType, Item};
+use std::fmt;
 
 pub struct BattleGear<'a> {
     pub head: Option<&'a Item>,
@@ -191,6 +192,16 @@ impl<'a> NPC<'a> {
 
     pub fn unequip_item<'b>(&'b mut self, item: &'a Item) {
         self.battle_gear.unequip_item(item);
+    }
+}
+
+impl<'a> fmt::Display for NPC<'a> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "{}\t-\t(Lvl. {} - 💪 {})",
+            self.name, self.level, self.strength
+        )
     }
 }
 

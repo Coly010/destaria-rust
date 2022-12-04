@@ -4,6 +4,7 @@ use destaria::game::system::cli::get_cli_input_with_prompt;
 
 use super::output;
 
+use crate::output::print_section_title;
 use colored::Colorize;
 use inquire::{InquireError, Select};
 
@@ -38,10 +39,7 @@ pub fn load_equipment(player: &mut Player) {
 }
 
 pub fn print_equipment_options(player: &Player) {
-    println!("\n");
-    println!("==============================");
-    println!("\n");
-    println!("Equipment Options:");
+    print_section_title("Equipment Options:");
 
     let has_equipped_items = player.get_battle_gear().has_items_equipped();
     if has_equipped_items {

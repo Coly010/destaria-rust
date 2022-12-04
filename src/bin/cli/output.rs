@@ -2,6 +2,7 @@ use destaria::game::battle::Battle;
 use destaria::game::player::{Player, NPC};
 use std::ops::{Div, Mul};
 
+use crate::{EQUIPMENT_COMMAND, INVENTORY_COMMAND, NPC_ARENA_COMMAND, RANDOM_BATTLE_COMMAND};
 use colored::Colorize;
 
 pub fn print_player_exp_bar(player: &Player) {
@@ -31,31 +32,27 @@ pub fn print_game_options(player: &Player) {
     println!("\n");
     println!("==============================");
     println!("Game Options:");
-    println!("[1]: Battle");
-    println!("[2]: Check Equipment");
-    println!("[3]: Check Inventory");
+    println!("[{}]: Random Battle", RANDOM_BATTLE_COMMAND);
+    println!("[{}]: NPC Arena", NPC_ARENA_COMMAND);
+    println!("[{}]: Check Equipment", EQUIPMENT_COMMAND);
+    println!("[{}]: Check Inventory", INVENTORY_COMMAND);
     println!("[Q]: Quit");
 }
 
-pub fn print_battle_options(player: &Player, npc: &NPC, battle: &Battle) {
+pub fn print_section_title(title: &str) {
     println!("\n\n");
     println!("==============================");
-    println!("Battle Stats");
+    println!("{}", title);
+}
+
+pub fn print_battle_options(player: &Player, npc: &NPC, battle: &Battle) {
+    print_section_title("Battle Stats");
     println!("==============================");
-    println!("     You     |    {}",npc.name);
+    println!("     You     |    {}", npc.name);
     println!("-------------|-------------");
-    println!(
-        "{}hp \t     |  {}hp",
-        battle.player_hp, battle.npc_hp
-    );
-    println!(
-        "💪 {}  \t     |  💪 {}",
-        player.strength, npc.strength
-    );
-    println!(
-        "Lvl {}  \t     |  Lvl {}",
-        player.level, npc.level
-    );
+    println!("{}hp \t     |  {}hp", battle.player_hp, battle.npc_hp);
+    println!("💪 {}  \t     |  💪 {}", player.strength, npc.strength);
+    println!("Lvl {}  \t     |  Lvl {}", player.level, npc.level);
     println!("{}/{} exp", player.exp, player.exp_to_next_level());
     print_player_exp_bar(&player);
     println!("\n");

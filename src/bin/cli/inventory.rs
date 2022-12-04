@@ -2,6 +2,7 @@ use destaria::game::item::Item;
 use destaria::game::player::Player;
 use destaria::game::system::cli::get_cli_input_with_prompt;
 
+use crate::output::print_section_title;
 use colored::Colorize;
 use inquire::{InquireError, Select};
 
@@ -80,10 +81,7 @@ fn print_inventory_options(player: &Player) {
     let inv = &player.inventory;
     let items = inv.iter();
 
-    println!("\n");
-    println!("==============================");
-    println!("\n");
-    println!("Inventory Options:");
+    print_section_title("Inventory Options:");
 
     if items.len() > 0 {
         println!("[{}]: Equip Item", INVENTORY_OPTIONS_EQUIP_ITEM);

@@ -1,12 +1,19 @@
-use destaria::game::content::base::{get_item_armour_keys, get_item_weapon_keys, get_items, get_npc_keys, get_npcs};
-use destaria::game::item::{Armour, ArmourType, Item, Weapon};
-use destaria::game::player::{Player, NPC};
+use destaria::game::content::base::{
+    get_item_armour_keys, get_item_weapon_keys, get_items, get_npc_keys, get_npcs,
+};
+use destaria::game::player::Player;
 use destaria::game::system::cli::get_cli_input_with_prompt;
 
 mod battle;
 mod equipment;
 mod inventory;
+mod npc_arena;
 mod output;
+
+const RANDOM_BATTLE_COMMAND: &str = "1";
+const NPC_ARENA_COMMAND: &str = "2";
+const EQUIPMENT_COMMAND: &str = "3";
+const INVENTORY_COMMAND: &str = "4";
 
 fn main() {
     let ITEMS = get_items();
@@ -39,14 +46,16 @@ fn main() {
         output::print_game_options(&player);
 
         let command = get_cli_input_with_prompt("> ");
-        if command.eq("1") {
+        if command.eq(RANDOM_BATTLE_COMMAND) {
             let npc_key: &str = NPC_KEYS[fastrand::usize(..NPC_KEYS.len())];
             if let Some(npc) = NPCS.get(npc_key) {
                 battle::battle(&mut player, &npc)
             }
-        } else if command.eq("2") {
+        } else if command.eq(NPC_ARENA_COMMAND) {
+            npc_arena::load_npc_arena(&mut player, &(Vec::from_iter(NPCS.values().clone())));
+        } else if command.eq(EQUIPMENT_COMMAND) {
             equipment::load_equipment(&mut player);
-        } else if command.eq("3") {
+        } else if command.eq(INVENTORY_COMMAND) {
             inventory::load_inventory(&mut player);
         } else if command.to_lowercase().eq("q") || command.to_lowercase().eq("quit") {
             println!("Quitting game...");
